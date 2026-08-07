@@ -6,6 +6,7 @@ import { apiErrorMessage } from "../utils/format";
 export default function Upload() {
   const navigate = useNavigate();
   const [form, setForm] = useState({ title: "", description: "" });
+  const [isShort, setIsShort] = useState(false);
   const [videoFile, setVideoFile] = useState(null);
   const [thumbnail, setThumbnail] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -23,6 +24,7 @@ export default function Upload() {
       const formData = new FormData();
       formData.append("title", form.title);
       formData.append("description", form.description);
+      formData.append("isShort", isShort);
       formData.append("videoFile", videoFile);
       formData.append("thumbnail", thumbnail);
       const video = await publishVideo(formData);
@@ -56,6 +58,18 @@ export default function Upload() {
             onChange={(e) => setForm({ ...form, description: e.target.value })}
             className="w-full rounded-lg border border-(--color-border) bg-(--color-surface) px-3 py-2.5 text-sm focus:border-(--color-accent) focus:outline-none"
           />
+        </div>
+        <div className="flex items-center gap-2">
+          <input
+            id="isShort"
+            type="checkbox"
+            checked={isShort}
+            onChange={(e) => setIsShort(e.target.checked)}
+            className="h-4 w-4 accent-(--color-accent)"
+          />
+          <label htmlFor="isShort" className="text-sm text-(--color-muted)">
+            This is a Short (vertical video, under a minute)
+          </label>
         </div>
         <div>
           <label className="mb-1 block text-sm text-(--color-muted)">Video file</label>

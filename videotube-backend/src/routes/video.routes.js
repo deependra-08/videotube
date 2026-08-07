@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
     deleteVideo,
     getAllVideos,
+    getShorts,
     getVideoById,
     publishAVideo,
     togglePublishStatus,
@@ -14,6 +15,8 @@ const router = Router();
 
 
 router.get("/", getAllVideos);
+
+router.get("/shorts", getShorts);
 
 router.get("/:videoId", verifyJWTOptional, getVideoById);
 

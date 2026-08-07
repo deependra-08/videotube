@@ -12,7 +12,7 @@ export default function Home() {
   useEffect(() => {
     let ignore = false;
     setIsLoading(true);
-    getAllVideos({ page: 1, limit: 24, sortBy: "createdAt", sortType: "desc" })
+    getAllVideos({ page: 1, limit: 24, sortBy: "createdAt", sortType: "desc", videoType: "video" })
       .then((data) => {
         if (!ignore) setVideos(data?.docs || []);
       })

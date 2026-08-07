@@ -37,6 +37,17 @@ export default function Navbar() {
         />
       </form>
 
+      <Link
+        to="/shorts"
+        className="flex items-center gap-1.5 rounded-full border border-(--color-border) px-3.5 py-2 text-sm hover:bg-(--color-surface-2)"
+      >
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <rect x="6" y="2" width="12" height="20" rx="3" />
+          <path d="M10 9l5 3-5 3z" fill="currentColor" stroke="none" />
+        </svg>
+        <span className="hidden sm:inline">Shorts</span>
+      </Link>
+
       <div className="ml-auto flex items-center gap-3">
         {user ? (
           <>

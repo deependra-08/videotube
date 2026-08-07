@@ -16,6 +16,7 @@ const getAllVideos = asyncHandler(async (req, res) => {
         sortBy = "createdAt",
         sortType = "desc",
         userId,
+        videoType, // "short" | "video" | undefined (= both)
     } = req.query;
 
     const pipeline = [];
@@ -25,6 +26,12 @@ const getAllVideos = asyncHandler(async (req, res) => {
             isPublished: true,
         },
     });
+
+    if (videoType === "short") {
+        pipeline.push({ $match: { isShort: true } });
+    } else if (videoType === "video") {
+        pipeline.push({ $match: { isShort: { $ne: true } } });
+    }
 
     if (query) {
         pipeline.push({
@@ -101,6 +108,58 @@ const getAllVideos = asyncHandler(async (req, res) => {
     );
 });
 
+// Get a batch of shorts for the swipeable shorts feed.
+// Returns a random selection so repeat visits don't always show the same
+// order, while `exclude` lets the frontend avoid re-serving shorts already
+// seen in the current session as the viewer keeps swiping.
+const getShorts = asyncHandler(async (req, res) => {
+    const { limit = 10, exclude = "" } = req.query;
+
+    const excludeIds = exclude
+        .split(",")
+        .filter((id) => isValidObjectId(id))
+        .map((id) => new mongoose.Types.ObjectId(id));
+
+    const pipeline = [
+        {
+            $match: {
+                isPublished: true,
+                isShort: true,
+                ...(excludeIds.length ? { _id: { $nin: excludeIds } } : {}),
+            },
+        },
+        { $sample: { size: Number(limit) } },
+        {
+            $lookup: {
+                from: "users",
+                localField: "owner",
+                foreignField: "_id",
+                as: "owner",
+                pipeline: [
+                    { $project: { fullname: 1, username: 1, avatar: 1 } },
+                ],
+            },
+        },
+        { $addFields: { owner: { $first: "$owner" } } },
+        {
+            $lookup: {
+                from: "likes",
+                localField: "_id",
+                foreignField: "video",
+                as: "likes",
+            },
+        },
+        { $addFields: { likesCount: { $size: "$likes" } } },
+        { $project: { likes: 0 } },
+    ];
+
+    const shorts = await Video.aggregate(pipeline);
+
+    return res
+        .status(200)
+        .json(new ApiResponse(200, shorts, "Shorts fetched successfully"));
+});
+
 // Get single video
 const getVideoById = asyncHandler(async (req, res) => {
     const { videoId } = req.params;
@@ -145,7 +204,7 @@ const getVideoById = asyncHandler(async (req, res) => {
 
 // Publish video
 const publishAVideo = asyncHandler(async (req, res) => {
-    const { title, description } = req.body;
+    const { title, description, isShort } = req.body;
 
     if (!title || !description) {
         throw new ApiError(400, "Title and description are required");
@@ -169,12 +228,19 @@ const publishAVideo = asyncHandler(async (req, res) => {
         throw new ApiError(500, "File upload failed");
     }
 
+    const duration = uploadedVideo.duration || 0;
+    // Respect an explicit choice from the uploader; otherwise fall back to
+    // a reasonable heuristic (Shorts are typically <= 60s).
+    const resolvedIsShort =
+        isShort !== undefined ? isShort === "true" || isShort === true : duration > 0 && duration <= 60;
+
     const video = await Video.create({
         title,
         description,
         videoFile: uploadedVideo.secure_url,
         thumbnail: uploadedThumbnail.secure_url,
-        duration: uploadedVideo.duration || 0,
+        duration,
+        isShort: resolvedIsShort,
         owner: req.user._id,
     });
 
@@ -279,6 +345,7 @@ const togglePublishStatus = asyncHandler(async (req, res) => {
 
 export {
     getAllVideos,
+    getShorts,
     getVideoById,
     publishAVideo,
     updateVideo,

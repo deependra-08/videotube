@@ -3,6 +3,7 @@ import Navbar from "./components/Navbar";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 import Home from "./pages/Home";
+import Shorts from "./pages/Shorts";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Watch from "./pages/Watch";
@@ -25,6 +26,7 @@ export default function App() {
       <main className="mx-auto max-w-[1600px] px-4 py-6 sm:px-6">
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/shorts" element={<Shorts />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/search" element={<Search />} />

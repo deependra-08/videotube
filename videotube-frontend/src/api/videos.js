@@ -2,6 +2,8 @@ import { api, unwrap } from "./client";
 
 export const getAllVideos = (params) => unwrap(api.get("/videos", { params }));
 
+export const getShorts = (params) => unwrap(api.get("/videos/shorts", { params }));
+
 export const getVideoById = (videoId) => unwrap(api.get(`/videos/${videoId}`));
 
 export const publishVideo = (formData) =>
@@ -21,4 +23,4 @@ export const updateVideo = (videoId, formData) =>
 export const deleteVideo = (videoId) => unwrap(api.delete(`/videos/${videoId}`));
 
 export const togglePublishStatus = (videoId) =>
-  unwrap(api.patch(`/videos/toggle/publish/${videoId}`));
+unwrap(api.patch(`/videos/toggle/publish/${videoId}`));
