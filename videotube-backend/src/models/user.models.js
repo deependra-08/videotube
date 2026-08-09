@@ -18,7 +18,8 @@ const userSchema = new Schema(
             required: true,
             unique: true,
             lowercase: true,
-            trim: true
+            trim: true,
+            match: [/^[^\s@]+@[^\s@]+\.[^\s@]+$/, "Please provide a valid email address"],
         },
 
         fullname: {
@@ -49,6 +50,11 @@ const userSchema = new Schema(
         },
         refreshToken: {
             type: String
+        },
+
+        isEmailVerified: {
+            type: Boolean,
+            default: true,
         }
 },
 {timestamps: true})

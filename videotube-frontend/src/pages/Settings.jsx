@@ -7,6 +7,7 @@ import {
   updateCoverImage,
 } from "../api/users";
 import { apiErrorMessage } from "../utils/format";
+import PasswordInput from "../components/PasswordInput";
 
 function SectionCard({ title, children }) {
   return (
@@ -194,23 +195,20 @@ export default function Settings() {
         <form onSubmit={handlePasswordSubmit} className="flex flex-col gap-3">
           <div>
             <label className="mb-1 block text-sm text-(--color-muted)">Current password</label>
-            <input
+            <PasswordInput
               required
-              type="password"
               value={passwords.oldPassword}
               onChange={(e) => setPasswords({ ...passwords, oldPassword: e.target.value })}
-              className="w-full rounded-lg border border-(--color-border) bg-(--color-bg) px-3 py-2.5 text-sm focus:border-(--color-accent) focus:outline-none"
             />
           </div>
           <div>
             <label className="mb-1 block text-sm text-(--color-muted)">New password</label>
-            <input
+            <PasswordInput
               required
-              type="password"
               minLength={8}
               value={passwords.newPassword}
               onChange={(e) => setPasswords({ ...passwords, newPassword: e.target.value })}
-              className="w-full rounded-lg border border-(--color-border) bg-(--color-bg) px-3 py-2.5 text-sm focus:border-(--color-accent) focus:outline-none"
+              autoComplete="new-password"
             />
           </div>
           {passwordError && <p className="text-sm text-(--color-danger)">{passwordError}</p>}

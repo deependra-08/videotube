@@ -1,11 +1,13 @@
- import { asyncHandler } from "../utils/asyncHandler.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
  import {ApiError} from "../utils/ApiError.js";
  import {User} from "../models/user.models.js";
  import {uploadOnCloudinary} from "../utils/cloudinary.js";
  import { ApiResponse } from "../utils/ApiResponse.js";
  import { verifyJWT } from "../middlewares/auth.middleware.js";
  import jwt from "jsonwebtoken";
-import mongoose from "mongoose";
+ import mongoose from "mongoose";
+ import crypto from "crypto";
+ import { sendEmail } from "../utils/sendEmail.js";
 
 const generateAccessAndRefreshTokens = async(userId)=>{
     try {
@@ -82,7 +84,7 @@ const generateAccessAndRefreshTokens = async(userId)=>{
     }
 
     return res.status(201).json(
-        new ApiResponse(200,createdUser,"User registered Successfully")
+        new ApiResponse(201,createdUser,"User registered successfully.")
     )
  })
 
@@ -452,6 +454,9 @@ const getWatchHistory = asyncHandler(async(req,res)=>{
     )
 })
 
+// Step 1 of email verification (used right after registration, and by the
+// "resend code" button): verify the OTP the user typed in matches what we
+// emailed them.
  export {
     registerUser,
     loginUser,
@@ -464,5 +469,4 @@ const getWatchHistory = asyncHandler(async(req,res)=>{
     updateUserCoverImage,
     getUserChannelProfile,
     getWatchHistory
-
  }

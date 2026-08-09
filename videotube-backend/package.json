@@ -10,12 +10,12 @@
   "author": "Deependra Singh",
   "type": "module",
   "main": "index.js",
- "scripts": {
-  "dev": "nodemon -r dotenv/config --experimental-json-modules src/index.js",
-  "start": "node src/index.js",
-  "seed": "node -r dotenv/config src/seed.js",
-  "seed:reset": "node -r dotenv/config src/seed.js --reset"
-},
+  "scripts": {
+    "dev": "nodemon -r dotenv/config --experimental-json-modules src/index.js",
+    "start": "node src/index.js",
+    "seed": "node -r dotenv/config src/seed.js",
+    "seed:reset": "node -r dotenv/config src/seed.js --reset"
+  },
   "devDependencies": {
     "nodemon": "^3.1.14",
     "prettier": "^3.9.4"
@@ -31,6 +31,7 @@
     "mongodb-memory-server": "^10.1.1",
     "mongoose": "^9.7.4",
     "mongoose-aggregate-paginate-v2": "^1.1.4",
-    "multer": "^2.2.0"
+    "multer": "^2.2.0",
+    "nodemailer": "^7.0.13"
   }
 }

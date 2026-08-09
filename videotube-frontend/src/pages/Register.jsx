@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { apiErrorMessage } from "../utils/format";
+import PasswordInput from "../components/PasswordInput";
 
 export default function Register() {
   const { register, login } = useAuth();
@@ -76,13 +77,12 @@ export default function Register() {
         </div>
         <div>
           <label className="mb-1 block text-sm text-(--color-muted)">Password</label>
-          <input
+          <PasswordInput
             required
-            type="password"
             minLength={8}
             value={form.password}
             onChange={(e) => setForm({ ...form, password: e.target.value })}
-            className="w-full rounded-lg border border-(--color-border) bg-(--color-surface) px-3 py-2.5 text-sm focus:border-(--color-accent) focus:outline-none"
+            autoComplete="new-password"
           />
         </div>
         <div>
